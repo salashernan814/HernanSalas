@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa de Vida </title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #eafaf1; /* verde muy claro */
+    color: #333;
+}
+h1 {
+    text-align: center;
+    padding: 40px 20px;
+    background: #a7e4b0; /* verde medio */
+    color: white;
+    margin: 0;
+}
+.timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+.timeline::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    background-color: #8cd48a; /* verde más intenso */
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.container {
+    position: relative;
+    width: 50%;
+    padding: 20px 30px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.7s ease-out;
+}
+.container.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.container.left {
+    left: 0;
+}
+.container.right {
+    left: 50%;
+}
+.container::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #a7e4b0; /* verde medio */
+    border: 4px solid white;
+    top: 25px;
+    border-radius: 50%;
+    z-index: 1;
+}
+.container.left::before {
+    right: -10px;
+}
+.container.right::before {
+    left: -10px;
+}
+.content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #cce6d8;
+}
+.year { font-weight: bold; color: #4f9a6d; margin-bottom: 5px; font-size: 16px; }
+.title { font-size: 18px; margin-bottom: 8px; color: #333; }
+.desc { font-size: 14px; color: #666; }
+
+/* Responsive */
+@media screen and (max-width: 768px){
+    .container, .container.left, .container.right {
+        width: 100%;
+        left: 0 !important;
+        padding-left: 50px;
+        padding-right: 25px;
+    }
+    .container.left::before, .container.right::before {
+        left: 15px;
+        right: auto;
+    }
+}
+</style>
+</head>
+<body>
+
+<h1>Mapa de Vida </h1>
+
+<div class="timeline" id="timeline"></div>
+
+<script>
+const eventos = [
+    {year:"2000", title:"Nacimiento", desc:"Nací en Recreo, Catamarca, en una familia de 6 hermanos."},
+    {year:"2003", title:"Mudanza", desc:"Me fui a vivir con mi hermana mayor y su cuñado."},
+    {year:"2004-2005", title:"Regreso", desc:"Volví con mi mamá tras su separación. Inicié el jardín."},
+    {year:"Primaria", title:"Etapa difícil", desc:"Bullying y hostigamiento familiar en Recreo."},
+    {year:"4° grado", title:"Nuevos amigos", desc:"En Casa de Piedra pude hacer dos buenos amigos."},
+    {year:"6° grado", title:"Mudanza a La Rioja", desc:"Mi mamá se mudó con mi padrastro y continué estudios allí."},
+    {year:"13 años", title:"Secundaria", desc:"Me aislé por experiencias previas, aunque hice un amigo. Olimpíadas de programación."},
+    {year:"2018", title:"Universidad", desc:"Comencé Ingeniería en Sistemas desmotivado. Inicié terapia."},
+    {year:"2019", title:"Cambio", desc:"Viajé a Mendoza en busca de un nuevo ambiente y seguí terapia."},
+    {year:"2020", title:"Pandemia", desc:"Aproveché para estudiar, continuar terapia y tuve mi primera relación."},
+    {year:"2021", title:"Ingreso universitario", desc:"Ingresé a Ingeniería en Sistemas con buenas notas."},
+    {year:"2022", title:"Regreso", desc:"Decidí volver a La Rioja. Terminé mi relación y seguí terapia."},
+    {year:"Actualidad", title:"Nuevo rumbo", desc:"Estudio Recursos Humanos y comencé a insertarme en el entorno laboral."}
+];
+
+// Crear contenedores dinámicamente
+const timeline = document.getElementById("timeline");
+eventos.forEach((evento, index) => {
+    const side = index % 2 === 0 ? "left" : "right";
+    const container = document.createElement("div");
+    container.className = "container " + side;
+    container.innerHTML = `
+        <div class="content">
+            <div class="year">${evento.year}</div>
+            <div class="title">${evento.title}</div>
+            <div class="desc">${evento.desc}</div>
+        </div>
+    `;
+    timeline.appendChild(container);
+});
+
+// Animación al hacer scroll
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if(entry.isIntersecting){
+            entry.target.classList.add("visible");
+        }
+    });
+}, {threshold:0.1});
+
+document.querySelectorAll('.container').forEach(c => observer.observe(c));
+</script>
+
+</body>
+</html>
